@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Rohtak Property Point">
+  <rect width="96" height="96" rx="22" fill="#ED1C24"/>
+  <path fill="#FFFFFC" fill-rule="evenodd" d="M48 84C44 78 22 58 22 40A26 26 0 1 1 74 40C74 58 52 78 48 84Z M48 25L64 39L59 39L59 55L37 55L37 39L32 39Z M45 55V47H51V55Z"/>
+  <ellipse cx="48" cy="87.5" rx="11" ry="2.2" fill="#ECA72C"/>
+</svg>
