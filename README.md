@@ -11,12 +11,13 @@ rohtak-property-point/
 ├── .nojekyll
 └── assets/
     ├── css/site.css        design system + all sections
-    ├── js/config.js        ← THE FILE YOU EDIT: phone, WhatsApp, listings
+    ├── js/config.js        ← THE FILE YOU EDIT: phone, WhatsApp, Instagram, listings
     ├── js/site.js          behaviour (header, finder, listings, forms…)
     └── img/
         ├── logo-mark.svg   pin-and-house mark, red badge
         ├── favicon.svg
-        └── listings/       6 illustrated placeholders — swap for real photos
+        ├── hero-building.jpg  the office at night (hero background)
+        └── posters/        property posters from Instagram, one per listing
 ```
 
 ## Palette
@@ -43,10 +44,12 @@ Brand red is kept for the logo, pin, large type and decoration.
 1. **Confirm 81000 00736 is on WhatsApp.** Every WhatsApp button and both forms
    send to `918100000736`. If WhatsApp is on another number, change
    `whatsappNumber` in `assets/js/config.js`.
-2. **Replace the sample listings.** The six listings in `config.js` are
-   placeholders (sector, size and features are made up). Edit the `listings`
-   array — add, remove or reorder freely. Drop real photos (4:3, jpg/webp) into
-   `assets/img/listings/` and point `img` at them.
+2. **Keep the listings current.** The listings come from the Instagram posters
+   (@rohtakpropertypoint). To add one: save the square poster in
+   `assets/img/posters/`, copy a block in the `listings` array of `config.js`,
+   fill in sector, size and price from the poster, and put it at the top. A
+   filter button appears for any new category you use. Mark a property sold by
+   setting `status: 'Sold'`.
 3. **Read the copy with the client.** Services and “Why us” wording describes
    how a broker usually works (documents checked, commission discussed up front,
    etc.). Confirm it matches how they actually operate.
@@ -56,9 +59,12 @@ Brand red is kept for the logo, pin, large type and decoration.
 ## Facts taken from the Google Business Profile
 
 Name (EN + हिंदी), 5.0 rating / 66 reviews, address (Shop 157, Market Sector
-2 & 3, near Jaat Bhawan, Tilak Nagar, Sector 3, Rohtak 124001), hours (daily
-8 AM – 8 PM) and the review quotes. If the review count grows, update the
-three places it appears in `index.html` (hero chip, stats, reviews header).
+2, near Jaat Bhawan, Tilak Nagar, Rohtak 124001), hours (daily 8 AM – 8 PM)
+and the review quotes. Note: the Google listing itself says "Sector 3 (P)";
+the owner confirmed the shop is in **Sector 2**, so the site says Sector 2
+everywhere — worth correcting the Google profile to match. If the review count
+grows, update the three places it appears in `index.html` (hero chip, stats,
+reviews header).
 
 ## Local preview
 
@@ -67,3 +73,12 @@ powershell -ExecutionPolicy Bypass -File serve.ps1
 ```
 
 then open http://localhost:4361/
+
+## Instagram
+
+The 11 listings are the property posters posted on
+https://www.instagram.com/rohtakpropertypoint/ on 13 Oct 2026 (the account posted
+one poster twice — the 60-yard Sector 2 plot — and it is listed once). Prices are
+the "Demand" figure printed on each poster. The posters also advertise
+`rohtakpropertypoint.com`; if the client owns that domain, point it at this site
+(add a `CNAME` file and set the custom domain in the repo's Pages settings).

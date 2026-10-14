@@ -10,7 +10,10 @@
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
   var wa = function (text) { return CFG.waLink ? CFG.waLink(text) : '#'; };
 
-  var CAT_LABEL = { plots: 'Plot', floors: 'Independent Floor', kothis: 'Kothi', commercial: 'Commercial', rent: 'Rental' };
+  /* singular for the card tag, plural for the filter button */
+  var CAT_LABEL  = { plots: 'Plot', houses: 'House', floors: 'Independent Floor', kothis: 'Kothi', commercial: 'Commercial', rent: 'Rental' };
+  var CAT_FILTER = { plots: 'Plots', houses: 'Houses', floors: 'Floors', kothis: 'Kothis', commercial: 'Commercial', rent: 'Rent' };
+  var CAT_ORDER  = ['plots', 'houses', 'floors', 'kothis', 'commercial', 'rent'];
 
   /* ---- 1. Contact links ------------------------------------------------- */
   function wireContact() {
@@ -32,6 +35,7 @@
       a.textContent = a.closest('.header__cta') ? CFG.phoneDisplay.replace(/^\+91\s*/, '') : CFG.phoneDisplay;
     });
     if (CFG.googleProfile) $$('[data-google]').forEach(function (a) { a.href = CFG.googleProfile; });
+    if (CFG.instagram) $$('[data-ig]').forEach(function (a) { a.href = CFG.instagram; });
     var dir = $('#directionsLink');
     if (dir && CFG.directions) dir.href = CFG.directions;
   }
@@ -244,11 +248,14 @@
     var PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s-7-6.6-7-12a7 7 0 0 1 14 0c0 5.4-7 12-7 12Zm0-9.5A2.5 2.5 0 1 0 12 7.5a2.5 2.5 0 0 0 0 5Z"/></svg>';
 
     grid.innerHTML = items.map(function (l, i) {
+      /* the poster carries its own "for sale" banner, so only flag a change of state */
+      var badge = (l.status && l.status !== 'For Sale')
+        ? '<span class="lcard__status' + statusClass(l.status) + '">' + esc(l.status) + '</span>' : '';
       return ''
         + '<article class="lcard" data-cat="' + esc(l.cat) + '" data-reveal style="--d:' + (i % 3) * 90 + 'ms">'
-        +   '<button class="lcard__media" type="button" data-open="' + i + '" aria-label="View details: ' + esc(l.title) + ', ' + esc(l.location) + '">'
-        +     '<img src="' + esc(l.img) + '" alt="" loading="lazy" decoding="async" width="1000" height="750">'
-        +     '<span class="lcard__status' + statusClass(l.status) + '">' + esc(l.status) + '</span>'
+        +   '<button class="lcard__media' + (l.fit === 'contain' ? ' lcard__media--contain' : '') + '" type="button" data-open="' + i + '" aria-label="View details: ' + esc(l.title) + ', ' + esc(l.location) + '">'
+        +     '<img src="' + esc(l.img) + '" alt="" loading="lazy" decoding="async" width="1080" height="1080">'
+        +     badge
         +   '</button>'
         +   '<div class="lcard__body">'
         +     '<span class="lcard__tag">' + esc(CAT_LABEL[l.cat] || l.cat) + '</span>'
@@ -263,7 +270,24 @@
         + '</article>';
     }).join('');
 
-    /* filters */
+    /* filters — one button per category that actually has a listing */
+    var bar = $('#filters');
+    if (bar) {
+      var counts = {};
+      items.forEach(function (l) { counts[l.cat] = (counts[l.cat] || 0) + 1; });
+      var cats = Object.keys(counts).sort(function (a, b) {
+        var ia = CAT_ORDER.indexOf(a), ib = CAT_ORDER.indexOf(b);
+        return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+      });
+      var btns = [{ key: 'all', label: 'All', n: items.length }].concat(cats.map(function (c) {
+        return { key: c, label: CAT_FILTER[c] || c, n: counts[c] };
+      }));
+      /* a single category needs no filter */
+      bar.innerHTML = cats.length < 2 ? '' : btns.map(function (b, i) {
+        return '<button class="filter' + (i === 0 ? ' is-active' : '') + '" data-filter="' + esc(b.key) + '" aria-pressed="' + (i === 0) + '">'
+          + esc(b.label) + ' <span class="filter__n">' + b.n + '</span></button>';
+      }).join('');
+    }
     var filters = $$('.filter');
     var empty = $('#listingEmpty');
     filters.forEach(function (btn) {
@@ -304,6 +328,11 @@
       $('#modalPrice').textContent = l.price || 'Price on request';
       $('#modalFeat').innerHTML = (l.features || []).map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('');
       $('#modalWa').href = wa(enquiryText(l));
+      var ig = $('#modalIg');
+      if (ig) {
+        ig.hidden = !l.ig;
+        if (l.ig) ig.href = 'https://www.instagram.com/p/' + l.ig + '/';
+      }
       modal.hidden = false;
       document.body.classList.add('is-locked');
       $('#modalClose').focus();

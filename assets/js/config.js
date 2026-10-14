@@ -17,12 +17,13 @@ window.RPP = {
   phoneHref:      '+918100000736',
 
   /* ----------------------------------------------------------------------
-     2. OFFICE — taken from the Google Business Profile
+     2. OFFICE + SOCIAL
      ---------------------------------------------------------------------- */
-  address: 'Shop No. 157, Market Sector 2 & 3, near Jaat Bhawan, Tilak Nagar, Sector 3, Rohtak, Haryana 124001',
+  address: 'Shop No. 157, Market Sector 2, near Jaat Bhawan, Tilak Nagar, Rohtak, Haryana 124001',
   hours:   'Open every day · 8 AM – 8 PM',
   googleProfile: 'https://share.google/cFkKcSjOGlK5zalMN',
-  directions:    'https://www.google.com/maps/dir/?api=1&destination=Rohtak+Property+Point,+Sector+3,+Rohtak,+Haryana+124001',
+  instagram:     'https://www.instagram.com/rohtakpropertypoint/',
+  directions:    'https://www.google.com/maps/dir/?api=1&destination=Rohtak+Property+Point,+Rohtak,+Haryana+124001',
 
   /* ----------------------------------------------------------------------
      3. FORM DELIVERY
@@ -33,73 +34,144 @@ window.RPP = {
   formEndpoint: '',
 
   /* ----------------------------------------------------------------------
-     4. LISTINGS  —  ***SAMPLE DATA: REPLACE WITH REAL INVENTORY***
-     cat:    plots | floors | kothis | commercial | rent
-     status: 'For Sale' | 'For Rent' | 'Sold' | 'Rented'
-     img:    any image path. Real photos (jpg/webp, 4:3) look best —
-             drop them in assets/img/listings/ and point at them here.
-     price:  leave as 'Price on request' if you'd rather talk first.
+     4. LISTINGS — the property posters from the Instagram account
+     (@rohtakpropertypoint), newest first. Details were read off each poster.
+
+     To add a property:
+       1. save the poster (square, ~1080px, .webp or .jpg) in assets/img/posters/
+       2. copy one block below, change the fields, and put it at the top
+
+     cat:      'plots' | 'houses'  (a filter button appears for every category used;
+               'floors' | 'commercial' | 'rent' also work)
+     status:   'For Sale' | 'For Rent' | 'Sold' | 'Rented'
+     price:    shown on the card; the poster's "Demand" figure
+     features: short chips shown in the detail pop-up
+     ig:       the post's code from instagram.com/p/<code>/ — adds a
+               "View original post" link (optional)
+     fit:      'contain' for posters that are not square, so nothing is cropped
      ---------------------------------------------------------------------- */
   listings: [
     {
-      title:    'Residential Plot',
-      cat:      'plots',
+      title:    '2.5-Storey House',
+      cat:      'houses',
       status:   'For Sale',
-      location: 'Sector 27, Rohtak',
-      size:     '240 sq. yd',
-      price:    'Price on request',
-      img:      'assets/img/listings/plate-plot.svg?v=2',
-      features: ['HSVP sector', 'Wide road', 'Registry ready']
+      location: 'Sector 35, Rohtak',
+      size:     '200 yd (8 Marla) · East facing',
+      price:    '₹2.80 Cr',
+      img:      'assets/img/posters/house-sector-35-200yd.webp',
+      fit:      'contain',
+      ig:       'DedlVrszZjh',
+      features: ['Newly constructed', 'Block B', '3 BHK on every floor', 'Near park', 'Road 12 m', 'Near all amenities']
     },
     {
-      title:    'Independent Floor · 3 BHK',
-      cat:      'floors',
-      status:   'For Sale',
-      location: 'Sector 3, Rohtak',
-      size:     'First floor · 3 BHK',
-      price:    'Price on request',
-      img:      'assets/img/listings/plate-floor.svg?v=2',
-      features: ['Stilt parking', 'Lift', 'Modular kitchen']
-    },
-    {
-      title:    'Double-Storey Kothi',
-      cat:      'kothis',
-      status:   'For Sale',
-      location: 'Sector 2, Rohtak',
-      size:     '300 sq. yd · 5 BHK',
-      price:    'Price on request',
-      img:      'assets/img/listings/plate-kothi.svg?v=2',
-      features: ['Corner', 'Lawn', 'Servant quarter']
-    },
-    {
-      title:    'Market Shop',
-      cat:      'commercial',
-      status:   'For Sale',
-      location: 'Market Sector 2 & 3, Rohtak',
-      size:     'Ground floor · front facing',
-      price:    'Price on request',
-      img:      'assets/img/listings/plate-shop.svg?v=2',
-      features: ['Main market', 'High footfall', 'Clear title']
-    },
-    {
-      title:    '2 BHK Floor for Rent',
-      cat:      'rent',
-      status:   'For Rent',
-      location: 'Tilak Nagar, Rohtak',
-      size:     'Second floor · semi-furnished',
-      price:    'Rent on request',
-      img:      'assets/img/listings/plate-rent.svg?v=2',
-      features: ['Family preferred', 'Parking', 'Near market']
-    },
-    {
-      title:    'SCO / Showroom',
-      cat:      'commercial',
+      title:    'Single-Storey House',
+      cat:      'houses',
       status:   'For Sale',
       location: 'Sector 1, Rohtak',
-      size:     'Ground + 2 floors',
-      price:    'Price on request',
-      img:      'assets/img/listings/plate-sco.svg?v=2',
-      features: ['Road facing', 'Glass frontage', 'Ideal for showroom']
+      size:     '250 yd (10 Marla) · North facing',
+      price:    '₹3.35 Cr',
+      img:      'assets/img/posters/house-sector-1-250yd.webp',
+      ig:       'DedlRFOzFpP',
+      features: ['Green belt facing', 'On the 30 m Sector 1–2 dividing road', 'Near all amenities']
+    },
+    {
+      title:    'Park-Facing Plot',
+      cat:      'plots',
+      status:   'For Sale',
+      location: 'Marwa Society, Rohtak',
+      size:     '160 yd (6 Marla)',
+      price:    '₹60,000 / yard',
+      img:      'assets/img/posters/plot-marwa-society-160yd.webp',
+      ig:       'DedlPLVTMt8',
+      features: ['Park facing', 'Registry case', 'Road 10 m', 'Negotiable']
+    },
+    {
+      title:    'North-Facing Plot',
+      cat:      'plots',
+      status:   'For Sale',
+      location: 'Sector 25, Rohtak',
+      size:     '113 yd (4 Marla) · North facing',
+      price:    '₹1 lakh / yard',
+      img:      'assets/img/posters/plot-sector-25-113yd.webp',
+      ig:       'DedlMDMzeIv',
+      features: ['Near park', 'Near all amenities']
+    },
+    {
+      title:    'East-Facing Plot',
+      cat:      'plots',
+      status:   'For Sale',
+      location: 'Sector 2, Rohtak',
+      size:     '60 yd · East facing',
+      price:    '₹57 lakh',
+      img:      'assets/img/posters/plot-sector-2-60yd.webp',
+      ig:       'DedlG2dTeEm',
+      features: ['Near park', 'Near all amenities']
+    },
+    {
+      title:    'West & Market-Facing Plot',
+      cat:      'plots',
+      status:   'For Sale',
+      location: 'Sector 35, Rohtak',
+      size:     '200 yd (8 Marla) · West & market facing',
+      price:    '₹1 lakh / yard',
+      img:      'assets/img/posters/plot-sector-35-200yd.webp',
+      ig:       'Dedk8juTTvn',
+      features: ['Block B', 'Road 12 m', 'Near all amenities', 'Negotiable']
+    },
+    {
+      title:    'Corner Plot, Park-Facing',
+      cat:      'plots',
+      status:   'For Sale',
+      location: 'Sector 4 Extension, Rohtak',
+      size:     '263 yd (10 Marla) · West & park facing',
+      price:    '₹3.10 Cr',
+      img:      'assets/img/posters/plot-sector-4-ext-263yd.webp',
+      ig:       'Dedk6jWTIM4',
+      features: ['Corner plot', 'Park facing', 'Near all amenities']
+    },
+    {
+      title:    'New Double-Storey House',
+      cat:      'houses',
+      status:   'For Sale',
+      location: 'Sector 2, Rohtak',
+      size:     '100 yd · East facing',
+      price:    '₹1.50 Cr',
+      img:      'assets/img/posters/house-sector-2-100yd.webp',
+      ig:       'Dedk4Z_zxx3',
+      features: ['Newly constructed', 'Road 10 m', 'School, hospital & market nearby', 'Wide roads', 'Security']
+    },
+    {
+      title:    'West-Facing Corner Plot',
+      cat:      'plots',
+      status:   'For Sale',
+      location: 'Sector 1, Rohtak',
+      size:     '251 yd (10 Marla) · West facing',
+      price:    '₹3.20 Cr',
+      img:      'assets/img/posters/plot-sector-1-251yd.webp',
+      ig:       'Dedk05ZzXKq',
+      features: ['Corner plot', 'Road 12 m', 'Near park', 'Near all amenities', 'Negotiable']
+    },
+    {
+      title:    'Plot Opposite HUDA Office',
+      cat:      'plots',
+      status:   'For Sale',
+      location: 'Sector 2, Rohtak',
+      size:     '251 yd (10 Marla)',
+      price:    '₹2.75 Cr',
+      img:      'assets/img/posters/plot-sector-2-huda-251yd.webp',
+      ig:       'DedkzA9zFk7',
+      features: ['Opposite HUDA office', 'Road 10 m', 'Near sector-joining road', 'Near park', 'Negotiable']
+    },
+    {
+      title:    'Double-Storey House',
+      cat:      'houses',
+      status:   'For Sale',
+      location: 'Sector 2, Rohtak',
+      size:     '251 yd (10 Marla) · West facing',
+      price:    '₹3.32 Cr',
+      img:      'assets/img/posters/house-sector-2-251yd.webp',
+      ig:       'DedkwnSz5Dx',
+      features: ['Prime location', 'Road 10 m', 'Near park', 'Near all amenities', 'Negotiable']
     }
   ]
 };
