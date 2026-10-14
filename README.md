@@ -17,7 +17,7 @@ rohtak-property-point/
         ├── logo-mark.svg   pin-and-house mark, red badge
         ├── favicon.svg
         ├── hero-building.jpg  the office at night (hero background)
-        └── posters/        property posters from Instagram, one per listing
+        └── posters/        105 property posters from Instagram (full + _t thumbnail)
 ```
 
 ## Palette
@@ -44,12 +44,14 @@ Brand red is kept for the logo, pin, large type and decoration.
 1. **Confirm 81000 00736 is on WhatsApp.** Every WhatsApp button and both forms
    send to `918100000736`. If WhatsApp is on another number, change
    `whatsappNumber` in `assets/js/config.js`.
-2. **Keep the listings current.** The listings come from the Instagram posters
-   (@rohtakpropertypoint). To add one: save the square poster in
-   `assets/img/posters/`, copy a block in the `listings` array of `config.js`,
-   fill in sector, size and price from the poster, and put it at the top. A
-   filter button appears for any new category you use. Mark a property sold by
-   setting `status: 'Sold'`.
+2. **Keep the listings current.** The 105 listings come from the Instagram
+   posters of 15 Sep - 14 Oct 2026. Each poster's details (sector, size, price,
+   facing) were read off the image by eye, so spot-check any that matter -
+   each property pop-up has a "View original post" link. To add a property:
+   save the poster (~960px wide .webp) in `assets/img/posters/` plus a ~480px
+   copy named `<same name>_t.webp`, copy a block in the `listings` array of
+   `config.js` (the field guide is above it) and put it at the top. Mark a
+   property sold with `status: 'Sold'`.
 3. **Read the copy with the client.** Services and “Why us” wording describes
    how a broker usually works (documents checked, commission discussed up front,
    etc.). Confirm it matches how they actually operate.
@@ -76,9 +78,11 @@ then open http://localhost:4361/
 
 ## Instagram
 
-The 11 listings are the property posters posted on
-https://www.instagram.com/rohtakpropertypoint/ on 13 Oct 2026 (the account posted
-one poster twice — the 60-yard Sector 2 plot — and it is listed once). Prices are
-the "Demand" figure printed on each poster. The posters also advertise
-`rohtakpropertypoint.com`; if the client owns that domain, point it at this site
-(add a `CNAME` file and set the custom domain in the repo's Pages settings).
+The 105 listings are the property posters on https://www.instagram.com/rohtakpropertypoint/
+posted 15 Sep - 14 Oct 2026 (the account had 448 posts in that window, but most
+are the same poster re-posted or re-designed; they were grouped by picture and by
+content, leaving 105 distinct properties plus a few generic dealer ads that were
+left out). Prices are the "Demand" figure printed on each poster. The posters
+also advertise `rohtakpropertypoint.com`; if the client owns that domain, point it
+at this site (add a `CNAME` file and set the custom domain in the repo's Pages
+settings).

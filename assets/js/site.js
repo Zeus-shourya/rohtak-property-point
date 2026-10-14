@@ -11,9 +11,9 @@
   var wa = function (text) { return CFG.waLink ? CFG.waLink(text) : '#'; };
 
   /* singular for the card tag, plural for the filter button */
-  var CAT_LABEL  = { plots: 'Plot', houses: 'House', floors: 'Independent Floor', kothis: 'Kothi', commercial: 'Commercial', rent: 'Rental' };
-  var CAT_FILTER = { plots: 'Plots', houses: 'Houses', floors: 'Floors', kothis: 'Kothis', commercial: 'Commercial', rent: 'Rent' };
-  var CAT_ORDER  = ['plots', 'houses', 'floors', 'kothis', 'commercial', 'rent'];
+  var CAT_LABEL  = { plots: 'Plot', houses: 'House', other: 'Property', floors: 'Independent Floor', kothis: 'Kothi', commercial: 'Commercial', rent: 'Rental' };
+  var CAT_FILTER = { plots: 'Plots', houses: 'Houses', other: 'Other', floors: 'Floors', kothis: 'Kothis', commercial: 'Commercial', rent: 'Rent' };
+  var CAT_ORDER  = ['plots', 'houses', 'floors', 'kothis', 'commercial', 'rent', 'other'];
 
   /* ---- 1. Contact links ------------------------------------------------- */
   function wireContact() {
@@ -244,17 +244,74 @@
   function wireListings() {
     var grid = $('#listingGrid');
     if (!grid) return;
-    var items = CFG.listings || [];
+    var items = CFG.listings || [];          /* newest first */
+    var PAGE = 24;
+    var state = { cat: 'all', sector: 'all', sort: 'new', shown: PAGE };
     var PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s-7-6.6-7-12a7 7 0 0 1 14 0c0 5.4-7 12-7 12Zm0-9.5A2.5 2.5 0 1 0 12 7.5a2.5 2.5 0 0 0 0 5Z"/></svg>';
 
-    grid.innerHTML = items.map(function (l, i) {
+    var bar = $('#filters'), sectorSel = $('#sectorFilter'), sortSel = $('#sortFilter');
+    var moreBtn = $('#listingMore'), countEl = $('#listingCount'), empty = $('#listingEmpty');
+
+    /* ---- controls built from the data ---- */
+    var counts = {}, sectors = {};
+    items.forEach(function (l) {
+      counts[l.cat] = (counts[l.cat] || 0) + 1;
+      if (l.sector) sectors[l.sector] = (sectors[l.sector] || 0) + 1;
+    });
+    var cats = Object.keys(counts).sort(function (a, b) {
+      var ia = CAT_ORDER.indexOf(a), ib = CAT_ORDER.indexOf(b);
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
+    });
+    if (bar) {
+      var btns = [{ key: 'all', label: 'All', n: items.length }].concat(cats.map(function (c) {
+        return { key: c, label: CAT_FILTER[c] || c, n: counts[c] };
+      }));
+      bar.innerHTML = cats.length < 2 ? '' : btns.map(function (b, i) {
+        return '<button class="filter' + (i === 0 ? ' is-active' : '') + '" data-filter="' + esc(b.key) + '" aria-pressed="' + (i === 0) + '">'
+          + esc(b.label) + ' <span class="filter__n">' + b.n + '</span></button>';
+      }).join('');
+    }
+    if (sectorSel) {
+      var names = Object.keys(sectors).sort(function (a, b) {
+        var na = parseFloat(a.replace(/\D+/g, '')), nb = parseFloat(b.replace(/\D+/g, ''));
+        if (isNaN(na) || isNaN(nb)) return a < b ? -1 : 1;
+        return na - nb || (a < b ? -1 : 1);
+      });
+      sectorSel.innerHTML = '<option value="all">All areas (' + items.length + ')</option>'
+        + names.map(function (n) { return '<option value="' + esc(n) + '">' + esc(n) + ' (' + sectors[n] + ')</option>'; }).join('');
+      sectorSel.parentNode.hidden = names.length < 2;
+    }
+
+    /* ---- filtering ---- */
+    function filtered() {
+      var out = [];
+      items.forEach(function (l, i) {
+        if (state.cat !== 'all' && l.cat !== state.cat) return;
+        if (state.sector !== 'all' && l.sector !== state.sector) return;
+        out.push({ l: l, i: i });
+      });
+      if (state.sort === 'low' || state.sort === 'high') {
+        var dir = state.sort === 'low' ? 1 : -1;
+        out.sort(function (a, b) {
+          var pa = a.l.p, pb = b.l.p;
+          if (pa == null && pb == null) return a.i - b.i;
+          if (pa == null) return 1;          /* unknown prices always last */
+          if (pb == null) return -1;
+          return (pa - pb) * dir || a.i - b.i;
+        });
+      }
+      return out;
+    }
+
+    function card(o) {
+      var l = o.l, i = o.i;
       /* the poster carries its own "for sale" banner, so only flag a change of state */
       var badge = (l.status && l.status !== 'For Sale')
         ? '<span class="lcard__status' + statusClass(l.status) + '">' + esc(l.status) + '</span>' : '';
       return ''
-        + '<article class="lcard" data-cat="' + esc(l.cat) + '" data-reveal style="--d:' + (i % 3) * 90 + 'ms">'
+        + '<article class="lcard">'
         +   '<button class="lcard__media' + (l.fit === 'contain' ? ' lcard__media--contain' : '') + '" type="button" data-open="' + i + '" aria-label="View details: ' + esc(l.title) + ', ' + esc(l.location) + '">'
-        +     '<img src="' + esc(l.img) + '" alt="" loading="lazy" decoding="async" width="1080" height="1080">'
+        +     '<img src="' + esc(l.thumb || l.img) + '" alt="" loading="lazy" decoding="async" width="480" height="480">'
         +     badge
         +   '</button>'
         +   '<div class="lcard__body">'
@@ -268,47 +325,45 @@
         +     '</div>'
         +   '</div>'
         + '</article>';
-    }).join('');
-
-    /* filters — one button per category that actually has a listing */
-    var bar = $('#filters');
-    if (bar) {
-      var counts = {};
-      items.forEach(function (l) { counts[l.cat] = (counts[l.cat] || 0) + 1; });
-      var cats = Object.keys(counts).sort(function (a, b) {
-        var ia = CAT_ORDER.indexOf(a), ib = CAT_ORDER.indexOf(b);
-        return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
-      });
-      var btns = [{ key: 'all', label: 'All', n: items.length }].concat(cats.map(function (c) {
-        return { key: c, label: CAT_FILTER[c] || c, n: counts[c] };
-      }));
-      /* a single category needs no filter */
-      bar.innerHTML = cats.length < 2 ? '' : btns.map(function (b, i) {
-        return '<button class="filter' + (i === 0 ? ' is-active' : '') + '" data-filter="' + esc(b.key) + '" aria-pressed="' + (i === 0) + '">'
-          + esc(b.label) + ' <span class="filter__n">' + b.n + '</span></button>';
-      }).join('');
     }
+
+    var drawn = 0, current = [];
+    function render(append) {
+      if (!append) { current = filtered(); drawn = 0; grid.innerHTML = ''; }
+      var upto = Math.min(state.shown, current.length);
+      grid.insertAdjacentHTML('beforeend', current.slice(drawn, upto).map(card).join(''));
+      drawn = upto;
+      if (countEl) countEl.textContent = current.length + (current.length === 1 ? ' property' : ' properties');
+      if (moreBtn) {
+        var left = current.length - drawn;
+        moreBtn.hidden = left <= 0;
+        moreBtn.firstChild.textContent = 'Show ' + Math.min(left, PAGE) + ' more ';
+        moreBtn.setAttribute('aria-label', 'Show more properties, ' + left + ' remaining');
+      }
+      if (empty) empty.hidden = current.length > 0;
+    }
+
+    function reset() { state.shown = PAGE; render(false); }
+
     var filters = $$('.filter');
-    var empty = $('#listingEmpty');
     filters.forEach(function (btn) {
       btn.addEventListener('click', function () {
-        var cat = btn.getAttribute('data-filter');
+        state.cat = btn.getAttribute('data-filter');
         filters.forEach(function (b) {
           var on = b === btn;
           b.classList.toggle('is-active', on);
           b.setAttribute('aria-pressed', String(on));
         });
-        var shown = 0;
-        $$('.lcard', grid).forEach(function (c) {
-          var hide = cat !== 'all' && c.getAttribute('data-cat') !== cat;
-          c.classList.toggle('is-hidden', hide);
-          if (!hide) { shown++; show(c); }
-        });
-        if (empty) empty.hidden = shown > 0;
+        reset();
       });
     });
+    if (sectorSel) sectorSel.addEventListener('change', function () { state.sector = sectorSel.value; reset(); });
+    if (sortSel) sortSel.addEventListener('change', function () { state.sort = sortSel.value; reset(); });
+    if (moreBtn) moreBtn.addEventListener('click', function () { state.shown += PAGE; render(true); });
 
-    /* detail modal */
+    render(false);
+
+    /* ---- detail modal ---- */
     var modal = $('#modal');
     if (!modal) return;
     var last = null;

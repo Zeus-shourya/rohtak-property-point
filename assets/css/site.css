@@ -1268,3 +1268,46 @@ body.is-locked .header { background: transparent; border-bottom-color: transpare
 
 .ico-ig { width: 16px; height: 16px; flex: none; fill: currentColor; margin-right: .1rem; }
 .modal__ig { justify-self: start; margin-top: .6rem; }
+
+/* ---- 22. Listings toolbar + paging ------------------------------------ */
+.ltools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .8rem 1.4rem;
+  margin: 0 0 clamp(1.2rem, 2.4vw, 1.8rem);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--rule);
+}
+.ltools__count {
+  margin: 0 auto 0 0;
+  font-size: .78rem; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--red-ink);
+}
+.ltools__sel { display: flex; align-items: center; gap: .6rem; }
+.ltools__sel[hidden] { display: none; }
+.ltools__sel span {
+  font-size: .66rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--ink) 80%, transparent);
+}
+.ltools__sel select {
+  padding: .55rem 2.1rem .55rem .9rem;
+  font-size: .86rem; font-weight: 600;
+  color: var(--ink);
+  background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23C4121A' stroke-width='1.8'/%3E%3C/svg%3E") no-repeat right .8rem center / .62rem auto;
+  border: 1.5px solid rgba(68, 9, 14, .2);
+  border-radius: 999px;
+  -webkit-appearance: none; appearance: none;
+  cursor: pointer;
+  max-width: 62vw;
+  transition: border-color .3s var(--ease);
+}
+.ltools__sel select:hover, .ltools__sel select:focus { border-color: var(--red); outline: none; }
+.lgrid__morewrap { display: flex; justify-content: center; margin-top: clamp(1.6rem, 3vw, 2.4rem); }
+.lgrid__morewrap .btn[hidden] { display: none; }
+
+@media (max-width: 640px) {
+  .ltools__count { flex: 1 0 100%; }
+  .ltools__sel { flex: 1 1 100%; justify-content: space-between; }
+  .ltools__sel select { flex: 1; max-width: none; }
+}

@@ -326,8 +326,23 @@
       <div class="filters" id="filters" data-reveal style="--d:160ms" role="group" aria-label="Filter listings"></div>
     </div>
 
+    <div class="ltools" data-reveal>
+      <p class="ltools__count" id="listingCount" aria-live="polite"></p>
+      <label class="ltools__sel"><span>Area</span><select id="sectorFilter"></select></label>
+      <label class="ltools__sel"><span>Sort by</span>
+        <select id="sortFilter">
+          <option value="new">Newest first</option>
+          <option value="low">Price: low to high</option>
+          <option value="high">Price: high to low</option>
+        </select>
+      </label>
+    </div>
+
     <div class="lgrid" id="listingGrid">
       <noscript><p class="lgrid__empty">Call <a href="tel:+918100000736">+91 81000 00736</a> for the latest listings.</p></noscript>
+    </div>
+    <div class="lgrid__morewrap">
+      <button class="btn btn--line" id="listingMore" type="button" hidden>Show 24 more <span class="arw" aria-hidden="true">&darr;</span></button>
     </div>
     <p class="lgrid__empty" id="listingEmpty" hidden>Nothing in this category on the website right now — new properties come in every week. <a data-wa href="#">Ask us on WhatsApp</a>.</p>
 
