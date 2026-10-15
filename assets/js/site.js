@@ -240,6 +240,50 @@
     return 'Hello Rohtak Property Point — I saw this on your website and I\'m interested:\n\n'
       + l.title + '\n' + l.location + (l.size ? '\n' + l.size : '') + '\n\nIs it still available?';
   }
+  /* "160 Yard Plot for sale in Marwa Society, Rohtak" — image alt text and the
+     listing name in the structured data. Built only from the listing's own
+     fields; the location is used as written (it already names the city). */
+  function listingName(l) {
+    var t = l.title || CAT_LABEL[l.cat] || 'Property';
+    var s = (l.status || '').toLowerCase();
+    if (s === 'for sale' && !/\bsale\b/i.test(t)) t += ' for sale';
+    else if (s === 'for rent' && !/\brent\b/i.test(t)) t += ' for rent';
+    if (!l.location) return t;
+    return t + (/\sin\s/i.test(l.title || '') ? ' — ' : ' in ') + l.location;
+  }
+
+  /* ---- 9a. Listings as schema.org ItemList (JSON-LD) -------------------
+     The grid only draws 24 at a time, so the full list is also published as
+     structured data, from the same config.js entries. Only fields that are
+     really in the data: name, status/size/price/features, poster, post link. */
+  function listingSchema(items) {
+    if (!items.length || !window.JSON || $('#listings-ld')) return;
+    var canon = $('link[rel="canonical"]');
+    var base = (canon && canon.href) || window.location.href.split('#')[0];
+    var abs = function (p) { try { return new URL(p, base).href; } catch (e) { return p; } };
+    var TYPE = { houses: 'House', kothis: 'House', floors: 'Accommodation' };
+    var data = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      '@id': base + '#listings',
+      name: 'Property listings in Rohtak — Rohtak Property Point',
+      numberOfItems: items.length,
+      itemListElement: items.map(function (l, i) {
+        var place = { '@type': TYPE[l.cat] || 'Place', name: listingName(l) };
+        var desc = [l.status, l.size, l.price].filter(Boolean).join(' · ');
+        if (l.features && l.features.length) desc += (desc ? '. ' : '') + l.features.join(', ');
+        if (desc) place.description = desc;
+        if (l.img) place.image = abs(l.img);
+        if (l.ig) place.sameAs = 'https://www.instagram.com/p/' + l.ig + '/';
+        return { '@type': 'ListItem', position: i + 1, item: place };
+      })
+    };
+    var s = document.createElement('script');
+    s.type = 'application/ld+json';
+    s.id = 'listings-ld';
+    s.textContent = JSON.stringify(data);
+    document.head.appendChild(s);
+  }
 
   function wireListings() {
     var grid = $('#listingGrid');
@@ -311,7 +355,7 @@
       return ''
         + '<article class="lcard">'
         +   '<button class="lcard__media' + (l.fit === 'contain' ? ' lcard__media--contain' : '') + '" type="button" data-open="' + i + '" aria-label="View details: ' + esc(l.title) + ', ' + esc(l.location) + '">'
-        +     '<img src="' + esc(l.thumb || l.img) + '" alt="" loading="lazy" decoding="async" width="480" height="480">'
+        +     '<img src="' + esc(l.thumb || l.img) + '" alt="' + esc(listingName(l)) + '" loading="lazy" decoding="async" width="480" height="480">'
         +     badge
         +   '</button>'
         +   '<div class="lcard__body">'
@@ -362,6 +406,7 @@
     if (moreBtn) moreBtn.addEventListener('click', function () { state.shown += PAGE; render(true); });
 
     render(false);
+    listingSchema(items);
 
     /* ---- detail modal ---- */
     var modal = $('#modal');
@@ -373,7 +418,7 @@
       if (!l) return;
       last = trigger;
       $('#modalImg').src = l.img;
-      $('#modalImg').alt = l.title + ' — ' + l.location;
+      $('#modalImg').alt = listingName(l);
       var st = $('#modalStatus');
       st.textContent = l.status;
       st.className = 'modal__status' + statusClass(l.status).replace('lcard', 'modal');
