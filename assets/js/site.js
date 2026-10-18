@@ -36,6 +36,7 @@
     });
     if (CFG.googleProfile) $$('[data-google]').forEach(function (a) { a.href = CFG.googleProfile; });
     if (CFG.instagram) $$('[data-ig]').forEach(function (a) { a.href = CFG.instagram; });
+    if (CFG.facebook) $$('[data-fb]').forEach(function (a) { a.href = CFG.facebook; });
     var dir = $('#directionsLink');
     if (dir && CFG.directions) dir.href = CFG.directions;
   }

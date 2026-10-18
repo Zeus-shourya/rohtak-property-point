@@ -23,6 +23,7 @@ window.RPP = {
   hours:   'Open every day · 8 AM – 8 PM',
   googleProfile: 'https://share.google/cFkKcSjOGlK5zalMN',
   instagram:     'https://www.instagram.com/rohtakpropertypoint/',
+  facebook:      'https://www.facebook.com/rohtak.propertypoint/',
   directions:    'https://www.google.com/maps/dir/?api=1&destination=Rohtak+Property+Point,+Rohtak,+Haryana+124001',
 
   /* ----------------------------------------------------------------------
