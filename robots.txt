@@ -1,9 +1,5 @@
 # Rohtak Property Point
-# This is a GitHub Pages project site, so crawlers only read the robots.txt at
-# https://zeus-shourya.github.io/robots.txt and ignore this one. It is kept for
-# when the site moves to its own domain. Submit the sitemap below in Google
-# Search Console directly.
 User-agent: *
 Allow: /
 
-Sitemap: https://zeus-shourya.github.io/rohtak-property-point/sitemap.xml
+Sitemap: https://rohtakpropertypoint.com/sitemap.xml
