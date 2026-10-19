@@ -87,15 +87,15 @@ also advertise `rohtakpropertypoint.com`; if the client owns that domain, point 
 at this site (add a `CNAME` file and set the custom domain in the repo's Pages
 settings).
 
-## Custom domain: rohtakpropertypoint.com
+## Custom domain: rohtakpropertypoint.com (live)
 
-The site's own addresses (canonical, social cards, structured data, sitemap,
-robots.txt) and the `CNAME` file are switched to `https://rohtakpropertypoint.com/`
-on the `custom-domain` branch. Merge it into `main` only once DNS points at
-GitHub, because as soon as a custom domain is set the old `github.io` address
-redirects to it.
+The site is served at **https://rohtakpropertypoint.com/** (GitHub Pages, HTTPS
+enforced, certificate covers the bare domain and `www`; `www`, plain `http` and
+the old `zeus-shourya.github.io` address all redirect to it). The `CNAME` file in
+this repo holds the domain - do not delete it.
 
-**1. DNS (GoDaddy, nameservers `ns51/ns52.domaincontrol.com`)**
+DNS lives at GoDaddy (the domain is in the owner's GoDaddy account, nameservers
+`ns51/ns52.domaincontrol.com`):
 
 | Type  | Name | Value                    |
 |-------|------|--------------------------|
@@ -105,13 +105,8 @@ redirects to it.
 | A     | @    | 185.199.111.153          |
 | CNAME | www  | zeus-shourya.github.io   |
 
-Replace the existing "Parked" `A @` record (it points at GoDaddy's parking page,
-`3.33.130.190`) and the `www` CNAME that points at `@`. Turn off any GoDaddy
-domain forwarding for the domain.
-
-**2. Switch the site over** (after the A records resolve to the four GitHub
-addresses): merge `custom-domain` into `main` and push; set the Pages custom
-domain to `rohtakpropertypoint.com` (repo Settings > Pages, or
-`PUT /repos/Zeus-shourya/rohtak-property-point/pages` with `{"cname": ...}`);
-wait for GitHub to issue the HTTPS certificate (minutes to an hour); then tick
-"Enforce HTTPS". Update the base URL for this site in `D:\E-BOOK\.claude\seo-check.ps1`.
+Other records (name servers, SOA, `_domainconnect`, `_dmarc`) are GoDaddy defaults
+and were left alone. The site's canonical, social-card, structured-data and
+sitemap addresses all use the new domain; `robots.txt` now sits at the host root
+so crawlers read it. To use Search Console, verify `https://rohtakpropertypoint.com/`
+and submit `sitemap.xml`.
