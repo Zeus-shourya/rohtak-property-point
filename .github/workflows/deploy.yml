@@ -1,0 +1,56 @@
+# Rebuilds and publishes the site on every commit to main, including every
+# "Save" in Pages CMS. Repo setting required once:
+#   Settings -> Pages -> Build and deployment -> Source: GitHub Actions
+# The custom domain (rohtakpropertypoint.com) is a Pages setting, not part of
+# this file, and is kept when the source is switched.
+name: Build & deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# A burst of CMS saves only needs the last one deployed.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bundle CMS content (content/ -> data/listings.json, sitemap.xml)
+        shell: pwsh
+        run: ./tools/build-data.ps1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Uploaded posters are often big phone photos. Shrink them and make the
+      # small card previews in the published copy only; the originals stay in
+      # the repo untouched.
+      - name: Optimise uploaded posters
+        run: |
+          npm install --no-save --no-audit --no-fund sharp@0.33.5
+          node tools/optimize-images.mjs assets/img/posters
+
+      - name: Drop editor-only files from the published site
+        run: rm -rf content tools .pages.yml README.md serve.ps1 node_modules package-lock.json
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - id: deployment
+        uses: actions/deploy-pages@v4

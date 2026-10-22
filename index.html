@@ -154,7 +154,7 @@
     <a class="drawer__link" href="#contact"><i>06</i> Contact</a>
   </nav>
   <div class="drawer__foot">
-    <a class="btn btn--amber js-phone-href" href="tel:+918100000736">Call 81000 00736</a>
+    <a class="btn btn--amber js-phone-href" data-cms="callLabel" href="tel:+918100000736">Call 81000 00736</a>
     <a class="link-u" data-wa href="#">Chat on WhatsApp</a>
     <a class="link-u" data-ig href="https://www.instagram.com/rohtakpropertypoint/" target="_blank" rel="noopener">Follow on Instagram</a>
     <a class="link-u" data-fb href="https://www.facebook.com/rohtak.propertypoint/" target="_blank" rel="noopener">Follow on Facebook</a>
@@ -180,18 +180,18 @@
 
   <div class="hero__in">
     <p class="eyebrow" data-reveal>Property Dealer · Sector 2, Rohtak</p>
-    <h1 data-reveal style="--d:90ms">The best investment on earth is <em>earth.</em></h1>
-    <p class="hero__sub" data-reveal style="--d:200ms">
+    <h1 data-cms="hero" data-reveal style="--d:90ms">The best investment on earth is <em>earth.</em></h1>
+    <p class="hero__sub" data-cms="heroText" data-reveal style="--d:200ms">
       Plots, independent floors, kothis, shops and rentals across Rohtak — bought, sold
       and rented the fair way, with every document checked before you sign.
     </p>
     <div class="hero__actions" data-reveal style="--d:300ms">
       <a class="btn btn--amber" href="#listings">Browse Listings <span class="arw" aria-hidden="true">→</span></a>
-      <a class="btn btn--ghost js-phone-href" href="tel:+918100000736">Call 81000 00736</a>
+      <a class="btn btn--ghost js-phone-href" data-cms="callLabel" href="tel:+918100000736">Call 81000 00736</a>
     </div>
     <a class="rating" data-google href="https://share.google/cFkKcSjOGlK5zalMN" target="_blank" rel="noopener" data-reveal style="--d:380ms">
       <span class="stars" aria-hidden="true">★★★★★</span>
-      <span><b>5.0</b> on Google · 66 reviews</span>
+      <span><b data-cms="rating">5.0</b> on Google · <span data-cms="reviewCount">66</span> reviews</span>
     </a>
   </div>
 
@@ -390,8 +390,10 @@
     </div>
 
     <div class="lgrid" id="listingGrid">
-      <noscript><p class="lgrid__empty">Call <a href="tel:+918100000736">+91 81000 00736</a> for the latest listings.</p></noscript>
+      <p class="lgrid__empty">Loading properties&hellip;</p>
+      <noscript><p class="lgrid__empty">Please turn on JavaScript to see the properties, or call <a href="tel:+918100000736">+91 81000 00736</a> for the latest listings.</p></noscript>
     </div>
+    <p class="lgrid__empty" id="listingLoadErr" hidden>We couldn't load the property list just now. Please refresh, or call <a class="js-phone-href js-phone-text" href="tel:+918100000736">+91 81000 00736</a> or <a data-wa href="#">message us on WhatsApp</a> for the latest properties.</p>
     <div class="lgrid__morewrap">
       <button class="btn btn--line" id="listingMore" type="button" hidden>Show 24 more <span class="arw" aria-hidden="true">&darr;</span></button>
     </div>
@@ -454,11 +456,11 @@
 
     <div class="assure">
       <div class="assure__item" data-reveal>
-        <span class="assure__n" data-count="5" data-decimals="1">5.0</span>
+        <span class="assure__n" data-count="5" data-decimals="1" data-cms-count="rating">5.0</span>
         <span>Google Rating</span>
       </div>
       <div class="assure__item" data-reveal style="--d:90ms">
-        <span class="assure__n" data-count="66">66</span>
+        <span class="assure__n" data-count="66" data-cms-count="reviewCount">66</span>
         <span>Google Reviews</span>
       </div>
       <div class="assure__item" data-reveal style="--d:180ms">
@@ -479,9 +481,9 @@
 
     <div class="reviews__head">
       <div class="reviews__score" data-reveal>
-        <strong>5.0</strong>
+        <strong data-cms="rating">5.0</strong>
         <span class="stars" aria-label="5 out of 5 stars">★★★★★</span>
-        <span class="reviews__count">66 reviews on Google</span>
+        <span class="reviews__count"><span data-cms="reviewCount">66</span> reviews on Google</span>
       </div>
       <div>
         <p class="eyebrow" data-reveal>In Their Words</p>
@@ -598,11 +600,11 @@
         </div>
         <div>
           <dt>Visit</dt>
-          <dd class="contact__addr">Shop No. 157, Market Sector 2,<br>near Jaat Bhawan, Tilak Nagar,<br>Rohtak, Haryana 124001</dd>
+          <dd class="contact__addr" data-cms="address">Shop No. 157, Market Sector 2,<br>near Jaat Bhawan, Tilak Nagar,<br>Rohtak, Haryana 124001</dd>
         </div>
         <div>
           <dt>Hours</dt>
-          <dd>Open every day · 8 AM – 8 PM</dd>
+          <dd data-cms="hours">Open every day · 8 AM – 8 PM</dd>
         </div>
       </dl>
     </div>
@@ -726,8 +728,8 @@
           <li><a data-wa href="#">WhatsApp</a></li>
           <li><a data-ig href="https://www.instagram.com/rohtakpropertypoint/" target="_blank" rel="noopener">Instagram</a></li>
           <li><a data-fb href="https://www.facebook.com/rohtak.propertypoint/" target="_blank" rel="noopener">Facebook</a></li>
-          <li>Shop 157, Market Sector 2, Rohtak 124001</li>
-          <li>Every day · 8 AM – 8 PM</li>
+          <li data-cms="address" data-cms-join>Shop No. 157, Market Sector 2, near Jaat Bhawan, Tilak Nagar, Rohtak, Haryana 124001</li>
+          <li data-cms="hours">Open every day · 8 AM – 8 PM</li>
         </ul>
       </div>
     </div>

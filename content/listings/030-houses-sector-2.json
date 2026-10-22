@@ -1,0 +1,19 @@
+{
+  "title": "60 Yard Double-Storey House",
+  "cat": "houses",
+  "status": "For Sale",
+  "location": "Sector 2, Rohtak",
+  "sector": "Sector 2",
+  "size": "60 yd",
+  "price": "₹72 lakh",
+  "p": 72,
+  "img": "/assets/img/posters/030-houses-sector-2.webp",
+  "features": [
+    "Newly constructed",
+    "Road 10 m",
+    "Main road",
+    "Near all amenities"
+  ],
+  "ig": "DedjAaYT325",
+  "date": "2026-10-14T10:10"
+}

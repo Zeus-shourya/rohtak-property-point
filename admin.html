@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Website editor | Rohtak Property Point</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#ED1C24">
+<link rel="icon" href="assets/img/favicon.svg?v=3" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Manrope:wght@400;600;700&family=Tiro+Devanagari+Hindi&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<style>
+  body { background: var(--amber-50); }
+  .adm-bar { background: var(--white); border-bottom: 1px solid var(--rule); }
+  .adm-bar__in { width: var(--shell); margin-inline: auto; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: .9rem; }
+  .adm-bar .lockup { --city: var(--red-ink); --word: var(--ink); }
+  .adm-back { font-size: .74rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--red-ink); }
+  .adm-back:hover { text-decoration: underline; }
+  .adm { width: min(860px, 100% - 2 * var(--gutter)); margin-inline: auto; padding-block: clamp(2.4rem, 6vw, 4.5rem) clamp(3rem, 7vw, 5.5rem); }
+  .adm h1 { font-size: var(--step-4); margin-bottom: 1rem; }
+  .adm h2 { font-size: var(--step-3); margin: clamp(2.4rem, 5vw, 3.6rem) 0 1.2rem; }
+  .adm .lede { margin-bottom: 1.6rem; }
+  .steps { counter-reset: s; list-style: none; padding: 0; margin: 0; display: grid; gap: .9rem; }
+  .steps li { counter-increment: s; position: relative; background: var(--white); border: 1px solid rgba(236,167,44,.45); border-radius: var(--radius); padding: 1.1rem 1.2rem 1.1rem 4.2rem; }
+  .steps li::before { content: counter(s); position: absolute; left: 1.1rem; top: 1rem; width: 2.2rem; height: 2.2rem; border-radius: 50%; background: var(--red-600); color: var(--paper); display: grid; place-items: center; font-family: var(--font-display); font-size: 1.05rem; }
+  .steps b { color: var(--red-ink); }
+  .hi { display: block; margin-top: .35rem; font-family: var(--font-hi); font-size: 1.02rem; line-height: 1.5; color: color-mix(in srgb, var(--ink) 80%, transparent); }
+  .hi b { color: var(--red-ink); }
+  .tips { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+  .tips div { background: var(--white); border: 1px solid rgba(236,167,44,.45); border-radius: var(--radius); padding: 1.1rem 1.2rem; }
+  .tips h3 { font-size: 1.12rem; margin-bottom: .35rem; }
+  .tips p { margin: 0; font-size: .95rem; }
+  .adm-note { margin-top: 2.6rem; padding: 1.1rem 1.3rem; border-left: 4px solid var(--red); background: var(--white); border-radius: 0 var(--radius) var(--radius) 0; font-size: .95rem; }
+  .adm-note p { margin: 0; }
+  .adm-note .hi { margin-top: .4rem; }
+  @media (max-width: 520px) { .steps li { padding-left: 3.6rem; } }
+</style>
+</head>
+<body>
+
+<header class="adm-bar">
+  <div class="adm-bar__in">
+    <a href="./" class="lockup" aria-label="Rohtak Property Point - back to the website">
+      <svg class="lockup__mark" viewBox="0 0 96 96" aria-hidden="true">
+        <rect class="badge" width="96" height="96" rx="22"/>
+        <path class="pin" fill-rule="evenodd" d="M48 84C44 78 22 58 22 40A26 26 0 1 1 74 40C74 58 52 78 48 84Z M48 25L64 39L59 39L59 55L37 55L37 39L32 39Z M45 55V47H51V55Z"/>
+      </svg>
+      <span class="lockup__type">
+        <span class="lockup__city">Rohtak</span>
+        <span class="lockup__word">Property Point</span>
+      </span>
+    </a>
+    <a class="adm-back" href="./">&larr; Back to website</a>
+  </div>
+</header>
+
+<main class="adm">
+  <p class="eyebrow">Website editor</p>
+  <h1>Add properties and update your website yourself</h1>
+  <p class="lede">Upload a new poster, mark a property sold, change your phone number or opening hours, all from your phone or computer. No coding needed.</p>
+  <p class="hi" lang="hi" style="margin-bottom:1.6rem">नई property का poster डालें, property को Sold करें, फ़ोन नंबर या समय बदलें, सब कुछ अपने फ़ोन या कंप्यूटर से।</p>
+  <p><a class="btn btn--amber" href="https://app.pagescms.org" target="_blank" rel="noopener">Open the editor <span class="arw" aria-hidden="true">&rarr;</span></a></p>
+
+  <h2>Add a new property</h2>
+  <ol class="steps">
+    <li>Open the editor with the button above and sign in with the <b>email address your web designer invited</b>.
+      <span class="hi" lang="hi">ऊपर वाले बटन से Editor खोलें और जिस email पर invite आया था उसी से login करें।</span></li>
+    <li>In the menu click <b>Properties</b>, then <b>Add an entry</b>.
+      <span class="hi" lang="hi">बाईं तरफ़ <b>Properties</b> पर क्लिक करें, फिर <b>Add an entry</b> दबाएँ।</span></li>
+    <li>Under <b>Poster / photo</b>, upload the property poster from your phone or computer. A square poster, like your Instagram posters, looks best.
+      <span class="hi" lang="hi"><b>Poster / photo</b> में property का poster upload करें। Instagram जैसा square poster सबसे अच्छा दिखता है।</span></li>
+    <li>Fill in the <b>title, type, status, location, size line and price</b> exactly as you want them to appear on the card, for example <b>250 yd (10 Marla) · North facing</b> and <b>₹3.35 Cr</b>.
+      <span class="hi" lang="hi"><b>Title, type, status, location, size और price</b> भरें, जैसा card पर दिखाना है बिल्कुल वैसा।</span></li>
+    <li>Click <b>Save</b>. The website updates in about <b>1&ndash;2 minutes</b>, and the new property appears at the top.
+      <span class="hi" lang="hi"><b>Save</b> दबाएँ। 1-2 मिनट में वेबसाइट पर दिखने लगेगा, सबसे ऊपर।</span></li>
+  </ol>
+
+  <h2>Good to know</h2>
+  <div class="tips">
+    <div><h3>Sold or rented?</h3><p>Open the property and change <b>Status</b> to Sold or Rented. It stays on the website with a badge.</p></div>
+    <div><h3>Remove from the website</h3><p>Set <b>Status</b> to <b>Hidden</b>. You can bring it back any time. Use Delete only if you will never need it again.</p></div>
+    <div><h3>Price sorting</h3><p>If the price is per yard (like ₹60,000 / yard), also fill <b>Total price in lakh</b> (200 yd &times; ₹60,000 = 120) so it sorts correctly. For prices like ₹3.35 Cr or ₹52 lakh it is worked out for you.</p></div>
+    <div><h3>Poster photos</h3><p>Phone photos are fine. They are resized automatically and a small preview is made for the property list.</p></div>
+    <div><h3>Phone, hours, address</h3><p>Open <b>Website settings</b> to change your phone number, WhatsApp number, office hours, address, social links and the home page headline.</p></div>
+    <div><h3>Reviews</h3><p>In <b>Website settings &rarr; Client reviews</b> you can add or change the review cards. Please add real reviews only.</p></div>
+  </div>
+
+  <div class="adm-note">
+    <p><b>Changes are not instant.</b> After you click Save, give the website 1&ndash;2 minutes, then refresh it. If something does not appear after 5 minutes, message your web designer.</p>
+    <span class="hi" lang="hi">Save के बाद 1-2 मिनट रुककर वेबसाइट refresh करें। 5 मिनट बाद भी न दिखे तो अपने web designer को message करें।</span>
+  </div>
+</main>
+
+</body>
+</html>

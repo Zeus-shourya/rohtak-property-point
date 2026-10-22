@@ -1,0 +1,16 @@
+{
+  "title": "Commercial Plot",
+  "cat": "commercial",
+  "status": "For Sale",
+  "location": "Delhi Road, Rohtak",
+  "sector": "Delhi Road",
+  "size": "225 yd",
+  "price": "₹3.25 lakh / yard",
+  "p": 731.25,
+  "img": "/assets/img/posters/098-commercial-delhi-road.webp",
+  "features": [
+    "Near Sunflag Hospital"
+  ],
+  "ig": "DdqUmZpzAAV",
+  "date": "2026-09-24T12:43"
+}

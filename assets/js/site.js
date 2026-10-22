@@ -253,9 +253,143 @@
     return t + (/\sin\s/i.test(l.title || '') ? ' — ' : ' in ') + l.location;
   }
 
+  /* ---- 9-pre. Data loading + tidying of CMS entries ---------------------
+     Properties come from data/listings.json (built from content/listings/*.json)
+     and settings from data/site.json - both edited in the CMS. Entries are
+     tidied here so a half-filled form still gives a sensible card. */
+  function getJSON(url) {
+    return fetch(url, { cache: 'no-cache' }).then(function (r) {
+      if (!r.ok) throw new Error(url + ' ' + r.status);
+      return r.json();
+    });
+  }
+  function digitsOf(s) { return String(s == null ? '' : s).replace(/\D/g, ''); }
+  /* "81000 00736" / "081000 00736" / "+91 81000 00736" -> 918100000736 */
+  function withCountry(s) {
+    var d = digitsOf(s);
+    if (d.length === 11 && d.charAt(0) === '0') d = d.slice(1);
+    if (d.length === 10) d = '91' + d;
+    return d;
+  }
+  function igLink(code) {
+    code = String(code || '').trim();
+    if (!code) return '';
+    return /^https?:\/\//i.test(code) ? code : 'https://www.instagram.com/p/' + code.replace(/^\/+|\/+$/g, '') + '/';
+  }
+  /* total price in lakh, worked out from "₹3.35 Cr" / "₹52 lakh" when the
+     entry has no explicit "p"; per-yard and per-month prices stay unknown */
+  function derivedP(price) {
+    var s = String(price || '');
+    if (/\/\s*(yard|yd|gaj|month|mo|sq)/i.test(s)) return null;
+    var m = s.match(/(\d[\d,]*(?:\.\d+)?)\s*(crores?|cr|lakhs?|lacs?|lac|l)\b/i);
+    if (!m) return null;
+    var v = parseFloat(m[1].replace(/,/g, ''));
+    if (isNaN(v)) return null;
+    return /^c/i.test(m[2]) ? v * 100 : v;
+  }
+  function prepare(l) {
+    var o = {};
+    for (var k in l) if (Object.prototype.hasOwnProperty.call(l, k)) o[k] = l[k];
+    o.cat = o.cat || 'other';
+    o.status = o.status || 'For Sale';
+    o.title = o.title || CAT_LABEL[o.cat] || 'Property';
+    o.location = o.location || '';
+    o.size = o.size || '';
+    o.price = o.price || 'Price on request';
+    o.features = Array.isArray(o.features) ? o.features.filter(Boolean) : [];
+    if (!o.sector && o.location) o.sector = String(o.location).split(',')[0].trim();
+    var p = (o.p === '' || o.p == null) ? NaN : Number(o.p);
+    o.p = isNaN(p) ? derivedP(o.price) : p;
+    o.img = String(o.img || '');
+    /* poster name -> preview name: /x/y.jpg -> /x/y_t.webp (made at deploy time) */
+    o.thumb = o.thumb || (o.img ? o.img.replace(/\.[a-z0-9]+$/i, '_t.webp') : '');
+    o.igUrl = igLink(o.ig);
+    return o;
+  }
+
+  /* ---- 9b. Website settings (data/site.json) ----------------------------
+     Overrides the fallback values from config.js, then rewrites the few
+     places on the page that show them. Text is only touched when it really
+     differs, so an unchanged setting causes no flicker. */
+  function setText(el, txt) {
+    if (!el) return;
+    var a = el.textContent.replace(/\s+/g, ' ').trim();
+    var b = String(txt).replace(/\s+/g, ' ').trim();
+    if (a !== b) el.textContent = txt;
+  }
+  function applySite(S) {
+    if (!S) return;
+    if (S.phone) { CFG.phoneDisplay = S.phone; CFG.phoneHref = '+' + withCountry(S.phone); }
+    if (S.whatsapp) CFG.whatsappNumber = withCountry(S.whatsapp);
+    ['whatsappText', 'address', 'hours', 'instagram', 'facebook', 'googleProfile', 'directions'].forEach(function (k) {
+      if (S[k]) CFG[k] = S[k];
+    });
+    wireContact();                                   /* phone, WhatsApp and social links */
+
+    var short = String(CFG.phoneDisplay || '').replace(/^\+91\s*/, '');
+    $$('[data-cms="callLabel"]').forEach(function (a) { setText(a, 'Call ' + short); });
+    if (S.hours) $$('[data-cms="hours"]').forEach(function (e) { setText(e, S.hours); });
+    if (S.address) {
+      var lines = String(S.address).split(/\r?\n/).map(function (x) { return x.trim(); }).filter(Boolean);
+      $$('[data-cms="address"]').forEach(function (e) {
+        if (e.hasAttribute('data-cms-join')) {
+          setText(e, lines.map(function (x, i) { return (i < lines.length - 1 && !/[,.]$/.test(x)) ? x + ',' : x; }).join(' '));
+        } else {
+          e.innerHTML = lines.map(esc).join('<br>');
+        }
+      });
+    }
+
+    var h1 = $('[data-cms="hero"]');
+    if (h1 && S.heroTitle) {
+      var html = esc(S.heroTitle) + (S.heroHighlight ? ' <em>' + esc(S.heroHighlight) + '</em>' : '');
+      if (h1.innerHTML.replace(/\s+/g, ' ').trim() !== html) h1.innerHTML = html;
+    }
+    if (S.heroText) setText($('[data-cms="heroText"]'), S.heroText);
+
+    if (S.rating) {
+      $$('[data-cms="rating"]').forEach(function (e) { setText(e, S.rating); });
+      $$('[data-cms-count="rating"]').forEach(function (e) { e.setAttribute('data-count', parseFloat(S.rating) || 0); setText(e, S.rating); });
+    }
+    if (S.reviewCount != null && S.reviewCount !== '') {
+      $$('[data-cms="reviewCount"]').forEach(function (e) { setText(e, S.reviewCount); });
+      $$('[data-cms-count="reviewCount"]').forEach(function (e) { e.setAttribute('data-count', parseFloat(S.reviewCount) || 0); setText(e, S.reviewCount); });
+    }
+
+    var rg = $('.rgrid');
+    if (rg && Array.isArray(S.reviews) && S.reviews.length) {
+      var have = $$('.rcard', rg).map(function (c) {
+        return (($('figcaption', c) || {}).textContent || '') + '|' + (($('blockquote', c) || {}).textContent || '');
+      }).join('\n');
+      var want = S.reviews.map(function (r) { return (r.name || '') + '|' + (r.text || ''); }).join('\n');
+      if (have !== want) {
+        rg.innerHTML = S.reviews.map(function (r, i) {
+          return '<figure class="rcard" data-reveal style="--d:' + (i % 3) * 80 + 'ms">'
+            + '<span class="stars" aria-label="5 stars">★★★★★</span>'
+            + '<blockquote>' + esc(r.text) + '</blockquote>'
+            + '<figcaption>' + esc(r.name) + '</figcaption></figure>';
+        }).join('');
+        wireReveal(rg);
+      }
+    }
+  }
+
+  function loadContent() {
+    var siteP = getJSON('data/site.json').catch(function () { return null; });
+    var listP = getJSON('data/listings.json').catch(function () { return null; });
+    Promise.all([siteP, listP]).then(function (r) {
+      applySite(r[0]);                               /* first: card links use the WhatsApp number */
+      if (r[1]) { wireListings(r[1]); return; }
+      var grid = $('#listingGrid'), err = $('#listingLoadErr'), cnt = $('#listingCount');
+      if (grid) grid.innerHTML = '';
+      if (err) err.hidden = false;
+      if (cnt) cnt.textContent = '';
+    });
+  }
+
   /* ---- 9a. Listings as schema.org ItemList (JSON-LD) -------------------
      The grid only draws 24 at a time, so the full list is also published as
-     structured data, from the same config.js entries. Only fields that are
+     structured data, from the same entries. Only fields that are
      really in the data: name, status/size/price/features, poster, post link. */
   function listingSchema(items) {
     if (!items.length || !window.JSON || $('#listings-ld')) return;
@@ -275,7 +409,7 @@
         if (l.features && l.features.length) desc += (desc ? '. ' : '') + l.features.join(', ');
         if (desc) place.description = desc;
         if (l.img) place.image = abs(l.img);
-        if (l.ig) place.sameAs = 'https://www.instagram.com/p/' + l.ig + '/';
+        if (l.igUrl) place.sameAs = l.igUrl;
         return { '@type': 'ListItem', position: i + 1, item: place };
       })
     };
@@ -286,10 +420,28 @@
     document.head.appendChild(s);
   }
 
-  function wireListings() {
+  function wireListings(rows) {
     var grid = $('#listingGrid');
     if (!grid) return;
-    var items = CFG.listings || [];          /* newest first */
+
+    /* A new poster's small preview is only made when the site is deployed.
+       Until it exists (and for any broken preview) show the full poster. */
+    grid.addEventListener('error', function (e) {
+      var im = e.target;
+      if (im && im.tagName === 'IMG' && im.getAttribute('data-full') && im.getAttribute('src') !== im.getAttribute('data-full')) {
+        im.src = im.getAttribute('data-full');
+      }
+    }, true);
+    /* Posters that are not square are shown whole on a matte instead of cropped. */
+    grid.addEventListener('load', function (e) {
+      var im = e.target;
+      if (im && im.tagName === 'IMG' && im.naturalWidth && Math.abs(im.naturalWidth / im.naturalHeight - 1) > 0.04) {
+        var box = im.closest('.lcard__media');
+        if (box) box.classList.add('lcard__media--contain');
+      }
+    }, true);
+
+    var items = (rows || []).filter(function (r) { return r && r.status !== 'Hidden'; }).map(prepare);   /* newest first */
     var PAGE = 24;
     var state = { cat: 'all', sector: 'all', sort: 'new', shown: PAGE };
     var PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s-7-6.6-7-12a7 7 0 0 1 14 0c0 5.4-7 12-7 12Zm0-9.5A2.5 2.5 0 1 0 12 7.5a2.5 2.5 0 0 0 0 5Z"/></svg>';
@@ -356,7 +508,7 @@
       return ''
         + '<article class="lcard">'
         +   '<button class="lcard__media' + (l.fit === 'contain' ? ' lcard__media--contain' : '') + '" type="button" data-open="' + i + '" aria-label="View details: ' + esc(l.title) + ', ' + esc(l.location) + '">'
-        +     '<img src="' + esc(l.thumb || l.img) + '" alt="' + esc(listingName(l)) + '" loading="lazy" decoding="async" width="480" height="480">'
+        +     '<img src="' + esc(l.thumb || l.img) + '" data-full="' + esc(l.img) + '" alt="' + esc(listingName(l)) + '" loading="lazy" decoding="async" width="480" height="480">'
         +     badge
         +   '</button>'
         +   '<div class="lcard__body">'
@@ -431,8 +583,8 @@
       $('#modalWa').href = wa(enquiryText(l));
       var ig = $('#modalIg');
       if (ig) {
-        ig.hidden = !l.ig;
-        if (l.ig) ig.href = 'https://www.instagram.com/p/' + l.ig + '/';
+        ig.hidden = !l.igUrl;
+        if (l.igUrl) ig.href = l.igUrl;
       }
       modal.hidden = false;
       document.body.classList.add('is-locked');
@@ -591,7 +743,6 @@
   /* ---- boot ------------------------------------------------------------- */
   function init() {
     wireContact();
-    wireListings();      /* before reveal, so the rendered cards animate in too */
     wireHeader();
     wireDrawer();
     wireReveal();
@@ -602,6 +753,7 @@
     wireCounters();
     wireForm();
     wireMisc();
+    loadContent();       /* properties + website settings from the CMS files */
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

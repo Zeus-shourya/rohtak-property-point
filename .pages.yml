@@ -1,0 +1,184 @@
+# Pages CMS configuration - https://pagescms.org/docs/configuration/
+# This file decides which forms the client sees in the editor (app.pagescms.org).
+# Every save in the editor is a commit to this repo; the GitHub Action in
+# .github/workflows/deploy.yml then rebuilds and republishes the site (~1 min).
+
+media:
+  input: assets/img/posters
+  output: /assets/img/posters
+  rename: safe
+  extensions: [png, jpg, jpeg, webp]
+
+content:
+  # ───────────────────────── Properties ─────────────────────────
+  - name: listings
+    label: Properties
+    type: collection
+    path: content/listings
+    format: json
+    filename: "{year}{month}{day}-{hour}{minute}-{primary}.json"
+    view:
+      primary: title
+      fields: [title, cat, status, location, price]
+      sort: [date, title]
+      search: [title, location, sector]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Property title
+        type: string
+        required: true
+        description: "e.g. 250 Yard Plot, 2.5-Storey House, 3 BHK Floor for Rent"
+      - name: cat
+        label: Property type
+        type: select
+        required: true
+        description: "Decides which filter button the property appears under."
+        options:
+          values:
+            - { name: plots, label: Plot }
+            - { name: houses, label: House / Kothi }
+            - { name: floors, label: Independent floor / Flat }
+            - { name: commercial, label: "Commercial (shop / SCO / showroom)" }
+            - { name: rent, label: "For rent (any rental)" }
+            - { name: other, label: Other }
+      - name: status
+        label: Status
+        type: select
+        required: true
+        description: "Sold and Rented properties stay on the website with a badge. Hidden removes it from the website without deleting it."
+        options:
+          values:
+            - { name: For Sale, label: For sale }
+            - { name: For Rent, label: For rent }
+            - { name: Sold, label: Sold }
+            - { name: Rented, label: Rented }
+            - { name: Hidden, label: Hidden (not shown on the website) }
+      - name: location
+        label: Location
+        type: string
+        required: true
+        description: "Shown on the card, e.g. Sector 2, Rohtak"
+      - name: sector
+        label: Area (for the Area filter)
+        type: string
+        description: "Short area name used by the Area drop-down, e.g. Sector 2, Suncity, Tau Nagar. Leave empty to use the first part of the location."
+      - name: size
+        label: Size line
+        type: string
+        description: "e.g. 250 yd (10 Marla) · North facing"
+      - name: price
+        label: Price (as shown on the card)
+        type: string
+        description: "Type it as it should appear, e.g. ₹3.35 Cr, ₹52 lakh, ₹60,000 / yard. Leave empty for 'Price on request'."
+      - name: p
+        label: Total price in lakh (for sorting, optional)
+        type: number
+        options:
+          min: 0
+        description: "Only used by the 'Price: low to high' sorting, e.g. 335 for ₹3.35 Cr. Leave empty and the website works it out from the price when it can (prices per yard need this filled in)."
+      - name: img
+        label: Poster / photo
+        type: image
+        required: true
+        description: "Upload the property poster. Square works best (like the Instagram posters). It is resized and a small preview is made automatically."
+        options:
+          extensions: [png, jpg, jpeg, webp]
+      - name: features
+        label: Highlights
+        type: string
+        list: true
+        description: "Short points shown when the property is opened, one per line, e.g. Corner plot, Road 12 m, Near park"
+      - name: ig
+        label: Instagram post link (optional)
+        type: string
+        description: "Paste the link of the Instagram post. A 'View original post' link is then shown."
+      - name: date
+        label: Date posted
+        type: date
+        required: true
+        description: "Newest first. It is filled in for you - change it only to move a property up or down the list."
+        options:
+          time: true
+          format: yyyy-MM-dd'T'HH:mm
+
+  # ───────────────────────── Website settings ─────────────────────────
+  - name: site
+    label: Website settings
+    type: file
+    path: data/site.json
+    format: json
+    operations:
+      delete: false
+    fields:
+      - name: phone
+        label: Phone number (shown on the website)
+        type: string
+        required: true
+        description: "e.g. +91 81000 00736. This is also the number the Call buttons dial."
+      - name: whatsapp
+        label: WhatsApp number
+        type: string
+        required: true
+        description: "Digits only, with the country code, no + or spaces, e.g. 918100000736"
+        pattern:
+          regex: "^[0-9]{10,13}$"
+          message: "Digits only, e.g. 918100000736"
+      - name: whatsappText
+        label: WhatsApp opening message
+        type: text
+        description: "The message that is ready-typed when a visitor taps a WhatsApp button."
+      - name: address
+        label: Office address
+        type: text
+        description: "One line per row, as it should appear (it is shown on 3 lines in the Contact section)."
+      - name: hours
+        label: Office hours
+        type: string
+        description: "e.g. Open every day · 8 AM – 8 PM"
+      - name: instagram
+        label: Instagram link
+        type: string
+      - name: facebook
+        label: Facebook link
+        type: string
+      - name: googleProfile
+        label: Google profile link
+        type: string
+        description: "Where the 'Read all reviews on Google' buttons go."
+      - name: directions
+        label: Google Maps directions link
+        type: string
+      - name: heroTitle
+        label: Home page headline
+        type: string
+        description: "The big line at the top, without its last highlighted word, e.g. The best investment on earth is"
+      - name: heroHighlight
+        label: Headline highlighted word
+        type: string
+        description: "The last word, shown in gold italics, e.g. earth."
+      - name: heroText
+        label: Home page sub-headline
+        type: text
+      - name: rating
+        label: Google rating
+        type: string
+        description: "e.g. 5.0"
+      - name: reviewCount
+        label: Number of Google reviews
+        type: number
+        options:
+          min: 0
+      - name: reviews
+        label: Client reviews
+        type: object
+        description: "The review cards on the home page. Add real reviews only."
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{name}"
+        fields:
+          - { name: name, label: Reviewer name, type: string, required: true }
+          - { name: text, label: Review, type: text, required: true }

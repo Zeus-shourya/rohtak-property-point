@@ -1,5 +1,6 @@
 # Rohtak Property Point
 User-agent: *
 Allow: /
+Disallow: /admin.html
 
 Sitemap: https://rohtakpropertypoint.com/sitemap.xml

@@ -4,6 +4,10 @@
       powershell -ExecutionPolicy Bypass -File serve.ps1
       then open http://localhost:4361/
 
+  data\listings.json and sitemap.xml are generated from content\ by
+  tools\build-data.ps1 - this server re-runs it whenever they are requested,
+  so edits to content\listings\*.json show up on refresh.
+
   Ctrl+C to stop.
 
   Notes on why it looks the way it does:
@@ -57,6 +61,12 @@ try {
       $rel = [System.Uri]::UnescapeDataString($rawPath).TrimStart('/')
       if ([string]::IsNullOrWhiteSpace($rel)) { $rel = 'index.html' }
       $rel = $rel -replace '/', '\'
+
+      # data\listings.json and sitemap.xml are generated from content\ - rebuild
+      # them whenever they are requested, so edits show up on refresh.
+      if ($rel -match '^(data\\listings\.json|sitemap\.xml)$') {
+        try { & (Join-Path $Root 'tools\build-data.ps1') -Root $Root | Out-Null } catch { Write-Host "build: $_" -ForegroundColor DarkRed }
+      }
 
       $full = Join-Path $Root $rel
       try { $full = [System.IO.Path]::GetFullPath($full) } catch { $full = '' }
