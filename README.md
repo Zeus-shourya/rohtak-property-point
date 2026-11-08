@@ -74,6 +74,11 @@ The 105 existing properties are the Instagram posters of 15 Sep – 14 Oct 2026
 the property's "View original post" link). New properties added in the editor are
 named from the date/time and the title.
 
+Posters the broker sent later (8 Nov 2026, converted to ~960 px WebP + preview) were
+added the same way. When a new poster was just a new design of a property already
+listed (same area, size and facing), that listing was refreshed with the new poster
+and price instead of adding a second card.
+
 ## What the CMS can and cannot change
 
 *Changes live:* properties (add, edit, mark sold, hide, delete), phone and the Call

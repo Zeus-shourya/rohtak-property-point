@@ -5,13 +5,16 @@
   "location": "Suncity, Sector 36, Rohtak",
   "sector": "Suncity",
   "size": "350 yd · North & Park facing",
-  "price": "₹1.85 Cr",
-  "p": 185,
-  "img": "/assets/img/posters/025-floors-suncity.webp",
+  "price": "₹1.80 Cr",
+  "p": 180,
+  "img": "/assets/img/posters/20261108-05-floors-suncity.webp",
   "features": [
     "3rd floor",
-    "50% roof rights"
+    "Roof rights",
+    "Newly constructed",
+    "Car parking",
+    "Near all amenities",
+    "Near park"
   ],
-  "ig": "Dedjhp6zfEB",
-  "date": "2026-10-14T10:14"
+  "date": "2026-11-08T14:36"
 }
